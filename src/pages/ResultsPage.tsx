@@ -42,7 +42,7 @@ export function ResultsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-4 text-xl font-semibold">Respuestas — Feedback de Logotipo Zamorano 85 Años</h1>
+      <h1 className="mb-4 text-xl font-semibold text-white">Respuestas — Feedback de Logotipo Zamorano 85 Años</h1>
       {error && <p className="text-red-600">{error}</p>}
       <div className="overflow-x-auto rounded-md border border-gray-200 bg-white">
         <table className="w-full border-collapse text-sm">
