@@ -6,14 +6,14 @@ import { Label } from '@/components/ui/label'
 import { advanceAdminState, fetchAdminState, resetAdminState } from '@/lib/api'
 
 const POLL_INTERVAL_MS = 3000
-const LAST_GATED_STEP = 6
+const LAST_GATED_STEP = 7
 
 const STEP_LABELS: Record<number, string> = {
   2: 'Sala de espera (nada abierto todavía)',
   3: 'Propuesta 1',
   4: 'Propuesta 2',
   5: 'Propuesta 3',
-  6: 'Comparación (todo abierto)',
+  7: 'Ficha de evaluación (todo abierto)',
 }
 
 export function AdminPage() {
@@ -73,7 +73,8 @@ export function AdminPage() {
       <div className="rounded-xl bg-white p-6 shadow">
         <h1 className="mb-1 text-xl font-semibold">Panel del presentador</h1>
         <p className="mb-6 text-sm text-gray-500">
-          Controla cuándo los participantes pueden avanzar entre las propuestas de logo.
+          Controla cuándo los participantes pueden avanzar entre propuestas y hacia la ficha de
+          evaluación.
         </p>
 
         <div className="mb-6 rounded-md border border-gray-200 bg-gray-50 p-4 text-center">

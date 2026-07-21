@@ -16,7 +16,7 @@ import { emptySurveyState, type Criterion, type PreferredProposal, type SurveySt
 
 const TOTAL_STEPS = 8
 const ADMIN_POLL_INTERVAL_MS = 3000
-const GATED_STEPS = [3, 4, 5]
+const GATED_STEPS = [3, 4, 5, 7]
 const ALREADY_SUBMITTED_KEY = 'zamorano-logo-survey-submitted'
 
 type ProposalKey = 'p1' | 'p2' | 'p3'
@@ -104,14 +104,13 @@ export function SurveyPage() {
     }
   }
 
-  function isGateOpen(currentStep: number): boolean {
-    if (!GATED_STEPS.includes(currentStep)) return true
-    return maxUnlockedStep > currentStep
+  function isUnlocked(targetStep: number): boolean {
+    if (!GATED_STEPS.includes(targetStep)) return true
+    return maxUnlockedStep >= targetStep
   }
 
   function handleNext() {
     if (!isStepComplete(step, survey)) return
-    if (!isGateOpen(step)) return
     if (step === 2) {
       void handleSaveWords()
       return
@@ -139,8 +138,7 @@ export function SurveyPage() {
   }
 
   const fieldsIncomplete = !isStepComplete(step, survey)
-  const gateClosed = !isGateOpen(step)
-  const waitingForProposal1 = step === 3 && maxUnlockedStep < 3
+  const waitingForGate = GATED_STEPS.includes(step) && !isUnlocked(step)
 
   return (
     <SlideShell
@@ -148,34 +146,31 @@ export function SurveyPage() {
       totalSteps={TOTAL_STEPS}
       onBack={handleBack}
       onNext={handleNext}
-      hideBack={step === 1 || waitingForProposal1}
-      hideNext={step === 8 || waitingForProposal1}
-      nextDisabled={fieldsIncomplete || gateClosed || (step === 7 && submitting) || (step === 2 && savingWords)}
-      nextHint={
-        gateClosed && !fieldsIncomplete
-          ? 'Esperando a que el presentador habilite la siguiente propuesta…'
-          : 'Complete todos los campos para continuar.'
-      }
+      hideBack={step === 1 || step >= 7 || waitingForGate}
+      hideNext={step === 8 || waitingForGate}
+      nextDisabled={fieldsIncomplete || (step === 7 && submitting) || (step === 2 && savingWords)}
       nextLabel={
         step === 7 ? (submitting ? 'Enviando…' : 'Enviar') : step === 2 && savingWords ? 'Guardando…' : 'Siguiente'
       }
     >
       {step === 1 && <WelcomeSlide />}
       {step === 2 && <WordAssociationSlide palabras={survey.palabras} onChange={updatePalabra} />}
-      {step === 3 && waitingForProposal1 && <WaitingRoomSlide />}
-      {step === 3 && !waitingForProposal1 && (
+      {step === 3 && waitingForGate && <WaitingRoomSlide message="Estamos contando las palabras…" />}
+      {step === 3 && !waitingForGate && (
         <Proposal1Slide
           comentario={survey.comentarioP1}
           onChange={(value) => setSurvey((prev) => ({ ...prev, comentarioP1: value }))}
         />
       )}
-      {step === 4 && (
+      {step === 4 && waitingForGate && <WaitingRoomSlide />}
+      {step === 4 && !waitingForGate && (
         <Proposal2Slide
           comentario={survey.comentarioP2}
           onChange={(value) => setSurvey((prev) => ({ ...prev, comentarioP2: value }))}
         />
       )}
-      {step === 5 && (
+      {step === 5 && waitingForGate && <WaitingRoomSlide />}
+      {step === 5 && !waitingForGate && (
         <Proposal3Slide
           comentario={survey.comentarioP3}
           onChange={(value) => setSurvey((prev) => ({ ...prev, comentarioP3: value }))}
@@ -187,7 +182,8 @@ export function SurveyPage() {
           onChange={(value) => setSurvey((prev) => ({ ...prev, comentarioComparacion: value }))}
         />
       )}
-      {step === 7 && (
+      {step === 7 && waitingForGate && <WaitingRoomSlide />}
+      {step === 7 && !waitingForGate && (
         <EvaluationSlide
           ratings={survey.ratings}
           onRatingChange={updateRating}

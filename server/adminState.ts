@@ -1,22 +1,22 @@
 // In-memory pacing state for the live session — the host advances it from /admin.
-// Not persisted: a server restart resets it to the waiting room (fail-open, never locks
-// the room out on a crash — it just re-shows the waiting screen instead of skipping it).
-// Step 2 = waiting room after the 3-words slide; 3/4/5 = Propuesta 1/2/3; 6 = comparación.
-const FIRST_GATED_STEP = 2
-const LAST_GATED_STEP = 6
+// Not persisted: a server restart resets it to the first waiting room (fail-open, never
+// locks the room out on a crash — it just re-shows the waiting screen instead of skipping it).
+// Sequence of meaningful gate values (skips steps that are never gated, like comparación):
+// 2 = waiting room after the 3-words slide, 3/4/5 = Propuesta 1/2/3, 7 = Ficha de evaluación.
+const GATE_SEQUENCE = [2, 3, 4, 5, 7]
 
-let maxUnlockedStep = FIRST_GATED_STEP
+let gateIndex = 0
 
 export function getMaxUnlockedStep(): number {
-  return maxUnlockedStep
+  return GATE_SEQUENCE[gateIndex]
 }
 
 export function advanceMaxUnlockedStep(): number {
-  maxUnlockedStep = Math.min(maxUnlockedStep + 1, LAST_GATED_STEP)
-  return maxUnlockedStep
+  gateIndex = Math.min(gateIndex + 1, GATE_SEQUENCE.length - 1)
+  return GATE_SEQUENCE[gateIndex]
 }
 
 export function resetMaxUnlockedStep(): number {
-  maxUnlockedStep = FIRST_GATED_STEP
-  return maxUnlockedStep
+  gateIndex = 0
+  return GATE_SEQUENCE[gateIndex]
 }
