@@ -39,7 +39,7 @@ async function main() {
   await registerRoutes(app)
 
   const port = Number(process.env.PORT) || 3001
-  await app.listen({ port })
+  await app.listen({ port, host: '0.0.0.0' })
 }
 
 main().catch((error) => {
