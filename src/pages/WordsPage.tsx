@@ -100,7 +100,7 @@ export function WordsPage() {
               return (
                 <span
                   key={word}
-                  className="font-bold leading-none transition-all duration-700 ease-out"
+                  className="animate-word-in font-bold leading-none transition-all duration-700 ease-out"
                   style={{
                     fontSize: `${sizeFor(count, maxCount)}px`,
                     color,
