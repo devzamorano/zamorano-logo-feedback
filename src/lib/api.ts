@@ -131,14 +131,3 @@ export async function resetAdminState(pin: string): Promise<AdminState> {
   return (await res.json()) as AdminState
 }
 
-export async function clearAllResponses(pin: string): Promise<void> {
-  const res = await fetch('/api/admin/clear-responses', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pin }),
-  })
-
-  if (!res.ok) {
-    throw new Error(res.status === 401 ? 'invalid_pin' : 'clear_failed')
-  }
-}

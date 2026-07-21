@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { advanceAdminState, clearAllResponses, fetchAdminState, resetAdminState } from '@/lib/api'
+import { advanceAdminState, fetchAdminState, resetAdminState } from '@/lib/api'
 
 const POLL_INTERVAL_MS = 3000
 const LAST_GATED_STEP = 6
@@ -65,23 +65,6 @@ export function AdminPage() {
     }
   }
 
-  async function handleClearResponses() {
-    const confirmed = window.confirm(
-      '¿Borrar TODAS las respuestas guardadas? Esta acción no se puede deshacer.'
-    )
-    if (!confirmed) return
-
-    setBusy(true)
-    try {
-      await clearAllResponses(pin)
-      toast.success('Respuestas borradas.')
-    } catch (error) {
-      toast.error(error instanceof Error && error.message === 'invalid_pin' ? 'PIN incorrecto.' : 'No se pudo borrar.')
-    } finally {
-      setBusy(false)
-    }
-  }
-
   const currentLabel = maxUnlockedStep !== null ? (STEP_LABELS[maxUnlockedStep] ?? '—') : 'Cargando…'
   const isFullyOpen = maxUnlockedStep !== null && maxUnlockedStep >= LAST_GATED_STEP
 
@@ -115,21 +98,6 @@ export function AdminPage() {
           </Button>
           <Button type="button" variant="outline" onClick={() => void handleReset()} disabled={busy || !pin}>
             Reiniciar a sala de espera
-          </Button>
-        </div>
-
-        <div className="mt-6 border-t border-gray-200 pt-4">
-          <p className="mb-2 text-xs text-gray-500">
-            Zona de peligro: borra todas las respuestas guardadas de forma permanente.
-          </p>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full border-red-300 text-red-600 hover:bg-red-50"
-            onClick={() => void handleClearResponses()}
-            disabled={busy || !pin}
-          >
-            Borrar todas las respuestas
           </Button>
         </div>
       </div>
