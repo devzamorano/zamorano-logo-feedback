@@ -21,6 +21,7 @@ export function EvaluationGrid({ ratings, onChange }: EvaluationGridProps) {
   return (
     <div className="space-y-3">
       <p className="text-xs text-gray-500">1 = Muy bajo | 2 = Bajo | 3 = Medio | 4 = Alto | 5 = Muy alto</p>
+      <p className="text-xs text-gray-500">Califique las 3 propuestas en los 8 criterios (todas las celdas son obligatorias). *</p>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>

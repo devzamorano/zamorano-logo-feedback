@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { CRITERIA } from '@/types/survey'
 
-const scoreSchema = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]).nullable()
+const scoreSchema = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)])
 
 const criterionRatingsSchema = z.object({
   p1: scoreSchema,
@@ -18,17 +18,17 @@ const ratingsShape = CRITERIA.reduce(
 )
 
 export const surveyPayloadSchema = z.object({
-  palabras: z.tuple([z.string(), z.string(), z.string()]),
-  comentarioP1: z.string(),
-  comentarioP2: z.string(),
-  comentarioP3: z.string(),
-  comentarioComparacion: z.string(),
+  palabras: z.tuple([z.string().min(1), z.string().min(1), z.string().min(1)]),
+  comentarioP1: z.string().min(1),
+  comentarioP2: z.string().min(1),
+  comentarioP3: z.string().min(1),
+  comentarioComparacion: z.string().min(1),
   ratings: z.object(ratingsShape),
-  preferida: z.enum(['1', '2', '3']).nullable(),
-  razonPreferida: z.string(),
-  aspectoMejorar: z.string(),
-  elementoIndispensable: z.string(),
-  comentarioFinal: z.string(),
+  preferida: z.enum(['1', '2', '3']),
+  razonPreferida: z.string().min(1),
+  aspectoMejorar: z.string().min(1),
+  elementoIndispensable: z.string().min(1),
+  comentarioFinal: z.string().min(1),
 })
 
 export type SurveyPayload = z.infer<typeof surveyPayloadSchema>

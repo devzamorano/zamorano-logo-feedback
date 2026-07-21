@@ -12,6 +12,8 @@ interface SlideShellProps {
   nextLabel?: string
   hideBack?: boolean
   hideNext?: boolean
+  nextDisabled?: boolean
+  nextHint?: string
   children: ReactNode
 }
 
@@ -25,11 +27,13 @@ export function SlideShell({
   nextLabel = 'Siguiente',
   hideBack = false,
   hideNext = false,
+  nextDisabled = false,
+  nextHint = 'Complete todos los campos para continuar.',
   children,
 }: SlideShellProps) {
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-2xl flex-col justify-center px-4 py-8">
-      <p className="mb-2 text-center text-sm text-gray-500">
+      <p className="mb-2 text-center text-sm font-medium text-white/90">
         Paso {step} de {totalSteps}
       </p>
       <Card>
@@ -43,11 +47,12 @@ export function SlideShell({
               </Button>
             )}
             {hideNext ? <span /> : (
-              <Button type="button" onClick={onNext}>
+              <Button type="button" onClick={onNext} disabled={nextDisabled}>
                 {nextLabel}
               </Button>
             )}
           </div>
+          {!hideNext && nextDisabled ? <p className="text-center text-xs text-red-600">{nextHint}</p> : null}
         </CardContent>
       </Card>
     </div>

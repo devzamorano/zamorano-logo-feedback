@@ -10,10 +10,10 @@ export function ComparisonSlide({ comentario, onChange }: ComparisonSlideProps) 
   return (
     <div className="space-y-4">
       <p className="text-gray-700">
-        Ahora que viste las tres propuestas, ¿qué diferencias o similitudes notás entre ellas?
+        Ahora que vio las tres propuestas, ¿qué diferencias o similitudes nota entre ellas?
       </p>
       <div className="space-y-1">
-        <Label htmlFor="comentario-comparacion">Comentario</Label>
+        <Label htmlFor="comentario-comparacion">Comentario *</Label>
         <Textarea
           id="comentario-comparacion"
           value={comentario}

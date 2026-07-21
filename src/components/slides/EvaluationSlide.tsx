@@ -46,7 +46,7 @@ export function EvaluationSlide({
       <section className="space-y-3">
         <h2 className="font-semibold">Priorización</h2>
         <div className="space-y-1">
-          <Label>¿Cuál propuesta preferís?</Label>
+          <Label>¿Cuál propuesta prefiere? *</Label>
           <RadioGroup
             value={preferida ?? undefined}
             onValueChange={(value) => onPreferidaChange(value as PreferredProposal)}
@@ -62,7 +62,7 @@ export function EvaluationSlide({
         </div>
 
         <div className="space-y-1">
-          <Label htmlFor="razon-preferida">¿Por qué?</Label>
+          <Label htmlFor="razon-preferida">¿Por qué? *</Label>
           <Textarea
             id="razon-preferida"
             value={razonPreferida}
@@ -72,7 +72,7 @@ export function EvaluationSlide({
 
         <div className="space-y-1">
           <Label htmlFor="aspecto-mejorar">
-            ¿Cuál es el principal aspecto que debería mejorarse o fortalecerse?
+            ¿Cuál es el principal aspecto que debería mejorarse o fortalecerse? *
           </Label>
           <Textarea
             id="aspecto-mejorar"
@@ -83,7 +83,7 @@ export function EvaluationSlide({
 
         <div className="space-y-1">
           <Label htmlFor="elemento-indispensable">
-            ¿Qué elemento o característica considerás indispensable?
+            ¿Qué elemento o característica considera indispensable? *
           </Label>
           <Textarea
             id="elemento-indispensable"
@@ -97,7 +97,7 @@ export function EvaluationSlide({
         <h2 className="font-semibold">Comentario final</h2>
         <Label htmlFor="comentario-final">
           Si pudiera hacer una recomendación final al equipo responsable del desarrollo del logotipo,
-          ¿cuál sería?
+          ¿cuál sería? *
         </Label>
         <Textarea
           id="comentario-final"

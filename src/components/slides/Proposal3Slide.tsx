@@ -12,7 +12,7 @@ export function Proposal3Slide({ comentario, onChange }: Proposal3SlideProps) {
     <div className="space-y-4">
       <ProposalImage src="/propuesta-3.png" alt="Propuesta 3" label="Propuesta 3" />
       <div className="space-y-1">
-        <Label htmlFor="comentario-p3">¿Qué te parece esta propuesta?</Label>
+        <Label htmlFor="comentario-p3">¿Cuáles son sus comentarios sobre esta propuesta? *</Label>
         <Textarea id="comentario-p3" value={comentario} onChange={(event) => onChange(event.target.value)} />
       </div>
     </div>

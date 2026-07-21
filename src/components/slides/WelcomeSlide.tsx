@@ -6,10 +6,12 @@ export function WelcomeSlide() {
         <strong>85 años de la Universidad Zamorano</strong>.
       </p>
       <p>
-        A continuación verás tres propuestas de logotipo y te pediremos tu opinión sobre cada una. Tu
-        participación es completamente anónima y no toma más de unos minutos.
+        A continuación, verá tres propuestas de logotipo y le pediremos su opinión sobre cada una. Esta
+        actividad no tiene como objetivo seleccionar el logotipo final, sino recopilar comentarios e
+        información que nos permitan enriquecer, ajustar y fortalecer las propuestas actuales.
       </p>
-      <p>Cuando estés listo, presioná "Siguiente" para comenzar.</p>
+      <p>Su participación es completamente anónima y le tomará solo unos minutos.</p>
+      <p>Cuando esté listo, presione «Siguiente» para comenzar.</p>
     </div>
   )
 }

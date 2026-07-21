@@ -10,9 +10,9 @@ interface Proposal2SlideProps {
 export function Proposal2Slide({ comentario, onChange }: Proposal2SlideProps) {
   return (
     <div className="space-y-4">
-      <ProposalImage src="/propuesta-2.png" alt="Propuesta 2" label="Propuesta 2" />
+      <ProposalImage src="/propuesta-2.svg" alt="Propuesta 2" label="Propuesta 2" />
       <div className="space-y-1">
-        <Label htmlFor="comentario-p2">¿Qué te parece esta propuesta?</Label>
+        <Label htmlFor="comentario-p2">¿Cuáles son sus comentarios sobre esta propuesta? *</Label>
         <Textarea id="comentario-p2" value={comentario} onChange={(event) => onChange(event.target.value)} />
       </div>
     </div>
