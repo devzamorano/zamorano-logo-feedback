@@ -9,6 +9,7 @@ const POLL_INTERVAL_MS = 3000
 const LAST_GATED_STEP = 6
 
 const STEP_LABELS: Record<number, string> = {
+  2: 'Sala de espera (nada abierto todavía)',
   3: 'Propuesta 1',
   4: 'Propuesta 2',
   5: 'Propuesta 3',
@@ -113,7 +114,7 @@ export function AdminPage() {
             {isFullyOpen ? 'Ya está todo abierto' : 'Abrir siguiente propuesta →'}
           </Button>
           <Button type="button" variant="outline" onClick={() => void handleReset()} disabled={busy || !pin}>
-            Reiniciar a Propuesta 1
+            Reiniciar a sala de espera
           </Button>
         </div>
 

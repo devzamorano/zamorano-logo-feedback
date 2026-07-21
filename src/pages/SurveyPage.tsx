@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import { SlideShell } from '@/components/SlideShell'
 import { WelcomeSlide } from '@/components/slides/WelcomeSlide'
 import { WordAssociationSlide } from '@/components/slides/WordAssociationSlide'
+import { WaitingRoomSlide } from '@/components/slides/WaitingRoomSlide'
 import { Proposal1Slide } from '@/components/slides/Proposal1Slide'
 import { Proposal2Slide } from '@/components/slides/Proposal2Slide'
 import { Proposal3Slide } from '@/components/slides/Proposal3Slide'
@@ -27,7 +28,7 @@ export function SurveyPage() {
   const [submitting, setSubmitting] = useState(false)
   const [savingWords, setSavingWords] = useState(false)
   const [responseId, setResponseId] = useState<number | null>(null)
-  const [maxUnlockedStep, setMaxUnlockedStep] = useState(3)
+  const [maxUnlockedStep, setMaxUnlockedStep] = useState(2)
   const [alreadySubmitted] = useState(() => localStorage.getItem(ALREADY_SUBMITTED_KEY) === 'true')
 
   useEffect(() => {
@@ -139,6 +140,7 @@ export function SurveyPage() {
 
   const fieldsIncomplete = !isStepComplete(step, survey)
   const gateClosed = !isGateOpen(step)
+  const waitingForProposal1 = step === 3 && maxUnlockedStep < 3
 
   return (
     <SlideShell
@@ -146,8 +148,8 @@ export function SurveyPage() {
       totalSteps={TOTAL_STEPS}
       onBack={handleBack}
       onNext={handleNext}
-      hideBack={step === 1}
-      hideNext={step === 8}
+      hideBack={step === 1 || waitingForProposal1}
+      hideNext={step === 8 || waitingForProposal1}
       nextDisabled={fieldsIncomplete || gateClosed || (step === 7 && submitting) || (step === 2 && savingWords)}
       nextHint={
         gateClosed && !fieldsIncomplete
@@ -160,7 +162,8 @@ export function SurveyPage() {
     >
       {step === 1 && <WelcomeSlide />}
       {step === 2 && <WordAssociationSlide palabras={survey.palabras} onChange={updatePalabra} />}
-      {step === 3 && (
+      {step === 3 && waitingForProposal1 && <WaitingRoomSlide />}
+      {step === 3 && !waitingForProposal1 && (
         <Proposal1Slide
           comentario={survey.comentarioP1}
           onChange={(value) => setSurvey((prev) => ({ ...prev, comentarioP1: value }))}
