@@ -14,5 +14,15 @@
     --muted-foreground: 215.4 16.3% 46.9%;
   }
 
-  body { @apply bg-gray-100 text-gray-900 m-0; }
+  body {
+    @apply text-gray-900 m-0;
+    min-height: 100vh;
+    background:
+      linear-gradient(180deg, rgba(23, 52, 38, 0.82) 0%, rgba(23, 52, 38, 0.88) 100%),
+      url('/background-zamorano.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
 }
