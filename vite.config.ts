@@ -8,8 +8,10 @@ export default defineConfig({
     alias: { '@': path.resolve(__dirname, './src') },
   },
   server: {
+    host: true,
+    port: process.env.WEB_PORT ? Number(process.env.WEB_PORT) : 5173,
     proxy: {
-      '/api': 'http://localhost:3001',
+      '/api': `http://localhost:${process.env.PORT || 3001}`,
     },
   },
 })
