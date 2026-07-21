@@ -1,13 +1,26 @@
 import { Toaster } from 'sonner'
 import { SurveyPage } from '@/pages/SurveyPage'
 import { ResultsPage } from '@/pages/ResultsPage'
+import { WordsPage } from '@/pages/WordsPage'
+import { AdminPage } from '@/pages/AdminPage'
 
 function App() {
-  const isResults = window.location.pathname === '/resultados'
+  const { pathname } = window.location
+
+  const page =
+    pathname === '/resultados' ? (
+      <ResultsPage />
+    ) : pathname === '/words' ? (
+      <WordsPage />
+    ) : pathname === '/admin' ? (
+      <AdminPage />
+    ) : (
+      <SurveyPage />
+    )
 
   return (
     <>
-      {isResults ? <ResultsPage /> : <SurveyPage />}
+      {page}
       <Toaster />
     </>
   )
