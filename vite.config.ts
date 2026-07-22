@@ -9,7 +9,7 @@ export default defineConfig({
   },
   server: {
     host: true,
-    port: process.env.WEB_PORT ? Number(process.env.WEB_PORT) : 6667,
+    port: process.env.WEB_PORT ? Number(process.env.WEB_PORT) : 5556,
     strictPort: true,
     proxy: {
       '/api': `http://localhost:${process.env.PORT || 3001}`,
