@@ -11,7 +11,7 @@ import { ComparisonSlide } from '@/components/slides/ComparisonSlide'
 import { EvaluationSlide } from '@/components/slides/EvaluationSlide'
 import { ClosingSlide } from '@/components/slides/ClosingSlide'
 import { fetchAdminState, postPalabras, postResponse, updatePalabras, updateResponse } from '@/lib/api'
-import { isStepComplete } from '@/lib/validation'
+import { getStep7MissingSummary, isStepComplete } from '@/lib/validation'
 import { emptySurveyState, type Criterion, type PreferredProposal, type SurveyState } from '@/types/survey'
 
 const TOTAL_STEPS = 8
@@ -154,6 +154,7 @@ export function SurveyPage() {
       nextLabel={
         step === 7 ? (submitting ? 'Enviando…' : 'Enviar') : step === 2 && savingWords ? 'Guardando…' : 'Siguiente'
       }
+      nextHint={step === 7 ? getStep7MissingSummary(survey) : undefined}
     >
       {step === 1 && <WelcomeSlide />}
       {step === 2 && <WordAssociationSlide palabras={survey.palabras} onChange={updatePalabra} />}

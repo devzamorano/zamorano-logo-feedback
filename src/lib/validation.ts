@@ -1,4 +1,27 @@
-import { CRITERIA, type SurveyState } from '@/types/survey'
+import { CRITERIA, type Ratings, type SurveyState } from '@/types/survey'
+
+export function countMissingRatings(ratings: Ratings): number {
+  return CRITERIA.reduce((count, { slug }) => {
+    const row = ratings[slug]
+    return count + [row.p1, row.p2, row.p3].filter((value) => value === null).length
+  }, 0)
+}
+
+export function getStep7MissingSummary(survey: SurveyState): string | undefined {
+  const missing: string[] = []
+  const missingRatings = countMissingRatings(survey.ratings)
+  if (missingRatings > 0) {
+    missing.push(`${missingRatings} calificación${missingRatings === 1 ? '' : 'es'} en la tabla de arriba`)
+  }
+  if (survey.preferida === null) missing.push('la propuesta preferida')
+  if (survey.razonPreferida.trim().length === 0) missing.push('el motivo de su preferencia')
+  if (survey.aspectoMejorar.trim().length === 0) missing.push('el aspecto a mejorar')
+  if (survey.elementoIndispensable.trim().length === 0) missing.push('el elemento indispensable')
+  if (survey.comentarioFinal.trim().length === 0) missing.push('el comentario final')
+
+  if (missing.length === 0) return undefined
+  return `Falta completar: ${missing.join(', ')}.`
+}
 
 export function isStepComplete(step: number, survey: SurveyState): boolean {
   switch (step) {

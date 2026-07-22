@@ -42,8 +42,11 @@ export function EvaluationGrid({ ratings, onChange }: EvaluationGridProps) {
                   <td key={column.key} className="border-b p-2 text-center">
                     <select
                       className={cn(
-                        'h-8 w-16 rounded-md border border-gray-300 bg-white text-center text-sm',
-                        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-900'
+                        'h-8 w-16 rounded-md border bg-white text-center text-sm',
+                        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-900',
+                        ratings[slug][column.key] === null
+                          ? 'border-red-400 ring-1 ring-red-200'
+                          : 'border-gray-300'
                       )}
                       value={ratings[slug][column.key] ?? ''}
                       onChange={(event) => {
