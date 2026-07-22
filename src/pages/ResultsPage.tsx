@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { fetchResponses } from '@/lib/api'
-import { exportResponsesToExcel } from '@/lib/exportExcel'
 
 const COLUMNS = [
   'id',
@@ -44,12 +42,7 @@ export function ResultsPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <h1 className="text-xl font-semibold text-white">Respuestas — Feedback de Logotipo Zamorano 85 Años</h1>
-        <Button type="button" onClick={() => exportResponsesToExcel(rows)} disabled={rows.length === 0}>
-          Exportar a Excel
-        </Button>
-      </div>
+      <h1 className="mb-4 text-xl font-semibold text-white">Respuestas — Feedback de Logotipo Zamorano 85 Años</h1>
       {error && <p className="text-red-600">{error}</p>}
       <div className="overflow-x-auto rounded-md border border-gray-200 bg-white">
         <table className="w-full border-collapse text-sm">
