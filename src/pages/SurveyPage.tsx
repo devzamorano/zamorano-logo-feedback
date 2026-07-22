@@ -18,6 +18,7 @@ const TOTAL_STEPS = 8
 const ADMIN_POLL_INTERVAL_MS = 3000
 const GATED_STEPS = [3, 4, 5, 7]
 const ALREADY_SUBMITTED_KEY = 'zamorano-logo-survey-submitted'
+const PROPOSAL_TITLES: Record<number, string> = { 3: 'Propuesta 1', 4: 'Propuesta 2', 5: 'Propuesta 3' }
 
 type ProposalKey = 'p1' | 'p2' | 'p3'
 type Score = 1 | 2 | 3 | 4 | 5 | null
@@ -144,6 +145,7 @@ export function SurveyPage() {
     <SlideShell
       step={step}
       totalSteps={TOTAL_STEPS}
+      title={waitingForGate ? undefined : PROPOSAL_TITLES[step]}
       onBack={handleBack}
       onNext={handleNext}
       hideBack={step === 1 || step >= 7 || waitingForGate}
