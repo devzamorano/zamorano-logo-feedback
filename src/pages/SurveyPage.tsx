@@ -30,6 +30,7 @@ export function SurveyPage() {
   const [savingWords, setSavingWords] = useState(false)
   const [responseId, setResponseId] = useState<number | null>(null)
   const [maxUnlockedStep, setMaxUnlockedStep] = useState(2)
+  const [surveyClosed, setSurveyClosed] = useState(false)
   const [alreadySubmitted] = useState(() => localStorage.getItem(ALREADY_SUBMITTED_KEY) === 'true')
 
   useEffect(() => {
@@ -38,7 +39,10 @@ export function SurveyPage() {
     async function poll() {
       try {
         const state = await fetchAdminState()
-        if (!cancelled) setMaxUnlockedStep(state.maxUnlockedStep)
+        if (!cancelled) {
+          setMaxUnlockedStep(state.maxUnlockedStep)
+          setSurveyClosed(state.closed)
+        }
       } catch {
         // silent — the next poll retries
       }
@@ -133,6 +137,17 @@ export function SurveyPage() {
         <div className="space-y-4 text-gray-700">
           <p className="font-semibold">Ya enviaste tu respuesta.</p>
           <p>Cada participante puede completar esta evaluación una sola vez. ¡Gracias por tu tiempo!</p>
+        </div>
+      </SlideShell>
+    )
+  }
+
+  if (surveyClosed) {
+    return (
+      <SlideShell step={TOTAL_STEPS} totalSteps={TOTAL_STEPS} hideBack hideNext>
+        <div className="space-y-4 text-gray-700">
+          <p className="font-semibold">Esta encuesta ya ha cerrado.</p>
+          <p>Gracias por su interés. Consulte con el equipo organizador si tiene alguna pregunta.</p>
         </div>
       </SlideShell>
     )

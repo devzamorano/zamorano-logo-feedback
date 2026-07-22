@@ -1,6 +1,12 @@
 import type { FastifyInstance } from 'fastify'
 import { pool } from './db.ts'
-import { advanceMaxUnlockedStep, getMaxUnlockedStep, resetMaxUnlockedStep } from './adminState.ts'
+import {
+  advanceMaxUnlockedStep,
+  getMaxUnlockedStep,
+  isSurveyClosed,
+  resetMaxUnlockedStep,
+  setSurveyClosed,
+} from './adminState.ts'
 
 interface CriterionRatings {
   p1: number | null
@@ -173,7 +179,7 @@ export async function registerRoutes(app: FastifyInstance) {
   })
 
   app.get('/api/admin/state', async (_request, reply) => {
-    return reply.status(200).send({ maxUnlockedStep: getMaxUnlockedStep() })
+    return reply.status(200).send({ maxUnlockedStep: getMaxUnlockedStep(), closed: isSurveyClosed() })
   })
 
   app.post('/api/admin/advance', async (request, reply) => {
@@ -181,7 +187,7 @@ export async function registerRoutes(app: FastifyInstance) {
     if (pin !== process.env.ADMIN_PIN) {
       return reply.status(401).send({ error: 'invalid_pin' })
     }
-    return reply.status(200).send({ maxUnlockedStep: advanceMaxUnlockedStep() })
+    return reply.status(200).send({ maxUnlockedStep: advanceMaxUnlockedStep(), closed: isSurveyClosed() })
   })
 
   app.post('/api/admin/reset', async (request, reply) => {
@@ -189,7 +195,15 @@ export async function registerRoutes(app: FastifyInstance) {
     if (pin !== process.env.ADMIN_PIN) {
       return reply.status(401).send({ error: 'invalid_pin' })
     }
-    return reply.status(200).send({ maxUnlockedStep: resetMaxUnlockedStep() })
+    return reply.status(200).send({ maxUnlockedStep: resetMaxUnlockedStep(), closed: isSurveyClosed() })
+  })
+
+  app.post('/api/admin/close', async (request, reply) => {
+    const { pin, closed } = request.body as { pin: string; closed: boolean }
+    if (pin !== process.env.ADMIN_PIN) {
+      return reply.status(401).send({ error: 'invalid_pin' })
+    }
+    return reply.status(200).send({ maxUnlockedStep: getMaxUnlockedStep(), closed: setSurveyClosed(closed) })
   })
 
   // Kept available while testing — clears all responses/words AND the admin gate for a fresh test run.

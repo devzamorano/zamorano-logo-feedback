@@ -6,9 +6,19 @@
 const GATE_SEQUENCE = [2, 3, 4, 5, 7]
 
 let gateIndex = 0
+let closed = false
 
 export function getMaxUnlockedStep(): number {
   return GATE_SEQUENCE[gateIndex]
+}
+
+export function isSurveyClosed(): boolean {
+  return closed
+}
+
+export function setSurveyClosed(value: boolean): boolean {
+  closed = value
+  return closed
 }
 
 export function advanceMaxUnlockedStep(): number {

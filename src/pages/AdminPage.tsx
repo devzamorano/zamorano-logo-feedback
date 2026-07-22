@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { advanceAdminState, fetchAdminState, resetAdminState } from '@/lib/api'
+import { advanceAdminState, fetchAdminState, resetAdminState, setSurveyClosed } from '@/lib/api'
 
 const POLL_INTERVAL_MS = 3000
 const LAST_GATED_STEP = 7
@@ -18,6 +18,7 @@ const STEP_LABELS: Record<number, string> = {
 
 export function AdminPage() {
   const [maxUnlockedStep, setMaxUnlockedStep] = useState<number | null>(null)
+  const [closed, setClosed] = useState(false)
   const [pin, setPin] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -27,7 +28,10 @@ export function AdminPage() {
     async function poll() {
       try {
         const state = await fetchAdminState()
-        if (!cancelled) setMaxUnlockedStep(state.maxUnlockedStep)
+        if (!cancelled) {
+          setMaxUnlockedStep(state.maxUnlockedStep)
+          setClosed(state.closed)
+        }
       } catch {
         // silent — the next poll retries
       }
@@ -65,6 +69,18 @@ export function AdminPage() {
     }
   }
 
+  async function handleToggleClosed() {
+    setBusy(true)
+    try {
+      const state = await setSurveyClosed(pin, !closed)
+      setClosed(state.closed)
+    } catch (error) {
+      toast.error(error instanceof Error && error.message === 'invalid_pin' ? 'PIN incorrecto.' : 'No se pudo actualizar.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   const currentLabel = maxUnlockedStep !== null ? (STEP_LABELS[maxUnlockedStep] ?? '—') : 'Cargando…'
   const isFullyOpen = maxUnlockedStep !== null && maxUnlockedStep >= LAST_GATED_STEP
 
@@ -80,6 +96,7 @@ export function AdminPage() {
         <div className="mb-6 rounded-md border border-gray-200 bg-gray-50 p-4 text-center">
           <p className="text-xs text-gray-500">Actualmente abierto</p>
           <p className="text-lg font-semibold">{currentLabel}</p>
+          {closed ? <p className="mt-1 text-sm font-medium text-red-600">Encuesta cerrada</p> : null}
         </div>
 
         <div className="mb-4 space-y-1">
@@ -99,6 +116,15 @@ export function AdminPage() {
           </Button>
           <Button type="button" variant="outline" onClick={() => void handleReset()} disabled={busy || !pin}>
             Reiniciar a sala de espera
+          </Button>
+          <Button
+            type="button"
+            variant={closed ? 'default' : 'outline'}
+            className={closed ? undefined : 'border-red-300 text-red-600 hover:bg-red-50'}
+            onClick={() => void handleToggleClosed()}
+            disabled={busy || !pin}
+          >
+            {closed ? 'Reabrir encuesta' : 'Cerrar encuesta'}
           </Button>
         </div>
       </div>

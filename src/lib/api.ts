@@ -91,6 +91,7 @@ export async function fetchWords(): Promise<WordCount[]> {
 
 export interface AdminState {
   maxUnlockedStep: number
+  closed: boolean
 }
 
 export async function fetchAdminState(): Promise<AdminState> {
@@ -122,6 +123,20 @@ export async function resetAdminState(pin: string): Promise<AdminState> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pin }),
+  })
+
+  if (!res.ok) {
+    throw new Error(res.status === 401 ? 'invalid_pin' : 'update_failed')
+  }
+
+  return (await res.json()) as AdminState
+}
+
+export async function setSurveyClosed(pin: string, closed: boolean): Promise<AdminState> {
+  const res = await fetch('/api/admin/close', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pin, closed }),
   })
 
   if (!res.ok) {
