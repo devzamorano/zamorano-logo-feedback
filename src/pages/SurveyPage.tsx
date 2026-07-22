@@ -48,11 +48,16 @@ export function SurveyPage() {
           setSurveyClosed(state.closed)
           setGeneration(state.generation)
 
-          const storedGeneration = localStorage.getItem(SUBMITTED_GENERATION_KEY)
-          if (storedGeneration !== null && Number(storedGeneration) !== state.generation) {
-            localStorage.removeItem(ALREADY_SUBMITTED_KEY)
-            localStorage.removeItem(SUBMITTED_GENERATION_KEY)
-            setAlreadySubmitted(false)
+          const isFlaggedSubmitted = localStorage.getItem(ALREADY_SUBMITTED_KEY) === 'true'
+          if (isFlaggedSubmitted) {
+            const storedGeneration = localStorage.getItem(SUBMITTED_GENERATION_KEY)
+            // No stored generation means the flag predates this check (set before a clear-responses
+            // ran) — treat it as stale too, not just an explicit generation mismatch.
+            if (storedGeneration === null || Number(storedGeneration) !== state.generation) {
+              localStorage.removeItem(ALREADY_SUBMITTED_KEY)
+              localStorage.removeItem(SUBMITTED_GENERATION_KEY)
+              setAlreadySubmitted(false)
+            }
           }
         }
       } catch {
