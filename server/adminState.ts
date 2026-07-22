@@ -7,9 +7,21 @@ const GATE_SEQUENCE = [2, 3, 4, 5, 7]
 
 let gateIndex = 0
 let closed = false
+// Bumped every time responses are cleared, so devices that already submitted
+// (flagged via localStorage) know their flag is stale from a previous test run.
+let generation = 0
 
 export function getMaxUnlockedStep(): number {
   return GATE_SEQUENCE[gateIndex]
+}
+
+export function getGeneration(): number {
+  return generation
+}
+
+export function bumpGeneration(): number {
+  generation += 1
+  return generation
 }
 
 export function isSurveyClosed(): boolean {

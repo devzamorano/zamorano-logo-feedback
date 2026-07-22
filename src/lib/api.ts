@@ -92,6 +92,7 @@ export async function fetchWords(): Promise<WordCount[]> {
 export interface AdminState {
   maxUnlockedStep: number
   closed: boolean
+  generation: number
 }
 
 export async function fetchAdminState(): Promise<AdminState> {

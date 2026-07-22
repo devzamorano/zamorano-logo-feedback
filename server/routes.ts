@@ -2,6 +2,8 @@ import type { FastifyInstance } from 'fastify'
 import { pool } from './db.ts'
 import {
   advanceMaxUnlockedStep,
+  bumpGeneration,
+  getGeneration,
   getMaxUnlockedStep,
   isSurveyClosed,
   resetMaxUnlockedStep,
@@ -179,7 +181,9 @@ export async function registerRoutes(app: FastifyInstance) {
   })
 
   app.get('/api/admin/state', async (_request, reply) => {
-    return reply.status(200).send({ maxUnlockedStep: getMaxUnlockedStep(), closed: isSurveyClosed() })
+    return reply
+      .status(200)
+      .send({ maxUnlockedStep: getMaxUnlockedStep(), closed: isSurveyClosed(), generation: getGeneration() })
   })
 
   app.post('/api/admin/advance', async (request, reply) => {
@@ -187,7 +191,9 @@ export async function registerRoutes(app: FastifyInstance) {
     if (pin !== process.env.ADMIN_PIN) {
       return reply.status(401).send({ error: 'invalid_pin' })
     }
-    return reply.status(200).send({ maxUnlockedStep: advanceMaxUnlockedStep(), closed: isSurveyClosed() })
+    return reply
+      .status(200)
+      .send({ maxUnlockedStep: advanceMaxUnlockedStep(), closed: isSurveyClosed(), generation: getGeneration() })
   })
 
   app.post('/api/admin/reset', async (request, reply) => {
@@ -195,7 +201,9 @@ export async function registerRoutes(app: FastifyInstance) {
     if (pin !== process.env.ADMIN_PIN) {
       return reply.status(401).send({ error: 'invalid_pin' })
     }
-    return reply.status(200).send({ maxUnlockedStep: resetMaxUnlockedStep(), closed: isSurveyClosed() })
+    return reply
+      .status(200)
+      .send({ maxUnlockedStep: resetMaxUnlockedStep(), closed: isSurveyClosed(), generation: getGeneration() })
   })
 
   app.post('/api/admin/close', async (request, reply) => {
@@ -203,10 +211,13 @@ export async function registerRoutes(app: FastifyInstance) {
     if (pin !== process.env.ADMIN_PIN) {
       return reply.status(401).send({ error: 'invalid_pin' })
     }
-    return reply.status(200).send({ maxUnlockedStep: getMaxUnlockedStep(), closed: setSurveyClosed(closed) })
+    return reply
+      .status(200)
+      .send({ maxUnlockedStep: getMaxUnlockedStep(), closed: setSurveyClosed(closed), generation: getGeneration() })
   })
 
-  // Kept available while testing — clears all responses/words AND the admin gate for a fresh test run.
+  // Kept available while testing — clears all responses/words, the admin gate, and bumps the
+  // generation counter so devices that already submitted stop being treated as "already submitted".
   app.post('/api/admin/clear-responses', async (request, reply) => {
     const { pin } = request.body as { pin: string }
     if (pin !== process.env.ADMIN_PIN) {
@@ -215,7 +226,8 @@ export async function registerRoutes(app: FastifyInstance) {
     try {
       await pool.query('TRUNCATE TABLE logo_evaluations RESTART IDENTITY')
       const maxUnlockedStep = resetMaxUnlockedStep()
-      return reply.status(200).send({ cleared: true, maxUnlockedStep })
+      const generation = bumpGeneration()
+      return reply.status(200).send({ cleared: true, maxUnlockedStep, generation })
     } catch (error) {
       app.log.error(error, 'failed to clear logo_evaluations')
       return reply.status(500).send({ error: 'clear_failed' })

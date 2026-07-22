@@ -18,6 +18,7 @@ const TOTAL_STEPS = 8
 const ADMIN_POLL_INTERVAL_MS = 3000
 const GATED_STEPS = [3, 4, 5, 7]
 const ALREADY_SUBMITTED_KEY = 'zamorano-logo-survey-submitted'
+const SUBMITTED_GENERATION_KEY = 'zamorano-logo-survey-submitted-generation'
 const PROPOSAL_TITLES: Record<number, string> = { 3: 'Propuesta 1', 4: 'Propuesta 2', 5: 'Propuesta 3' }
 
 type ProposalKey = 'p1' | 'p2' | 'p3'
@@ -31,7 +32,10 @@ export function SurveyPage() {
   const [responseId, setResponseId] = useState<number | null>(null)
   const [maxUnlockedStep, setMaxUnlockedStep] = useState(2)
   const [surveyClosed, setSurveyClosed] = useState(false)
-  const [alreadySubmitted] = useState(() => localStorage.getItem(ALREADY_SUBMITTED_KEY) === 'true')
+  const [generation, setGeneration] = useState(0)
+  const [alreadySubmitted, setAlreadySubmitted] = useState(
+    () => localStorage.getItem(ALREADY_SUBMITTED_KEY) === 'true'
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -42,6 +46,14 @@ export function SurveyPage() {
         if (!cancelled) {
           setMaxUnlockedStep(state.maxUnlockedStep)
           setSurveyClosed(state.closed)
+          setGeneration(state.generation)
+
+          const storedGeneration = localStorage.getItem(SUBMITTED_GENERATION_KEY)
+          if (storedGeneration !== null && Number(storedGeneration) !== state.generation) {
+            localStorage.removeItem(ALREADY_SUBMITTED_KEY)
+            localStorage.removeItem(SUBMITTED_GENERATION_KEY)
+            setAlreadySubmitted(false)
+          }
         }
       } catch {
         // silent — the next poll retries
@@ -84,6 +96,7 @@ export function SurveyPage() {
         await postResponse(survey)
       }
       localStorage.setItem(ALREADY_SUBMITTED_KEY, 'true')
+      localStorage.setItem(SUBMITTED_GENERATION_KEY, String(generation))
       setStep(8)
     } catch {
       toast.error('No se pudo enviar su respuesta. Intente de nuevo.')
