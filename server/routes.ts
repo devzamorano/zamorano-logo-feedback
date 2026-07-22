@@ -192,7 +192,7 @@ export async function registerRoutes(app: FastifyInstance) {
     return reply.status(200).send({ maxUnlockedStep: resetMaxUnlockedStep() })
   })
 
-  // Kept available while testing — clears all responses/words for a fresh test run.
+  // Kept available while testing — clears all responses/words AND the admin gate for a fresh test run.
   app.post('/api/admin/clear-responses', async (request, reply) => {
     const { pin } = request.body as { pin: string }
     if (pin !== process.env.ADMIN_PIN) {
@@ -200,7 +200,8 @@ export async function registerRoutes(app: FastifyInstance) {
     }
     try {
       await pool.query('TRUNCATE TABLE logo_evaluations RESTART IDENTITY')
-      return reply.status(200).send({ cleared: true })
+      const maxUnlockedStep = resetMaxUnlockedStep()
+      return reply.status(200).send({ cleared: true, maxUnlockedStep })
     } catch (error) {
       app.log.error(error, 'failed to clear logo_evaluations')
       return reply.status(500).send({ error: 'clear_failed' })
