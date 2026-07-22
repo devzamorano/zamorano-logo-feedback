@@ -191,19 +191,4 @@ export async function registerRoutes(app: FastifyInstance) {
     }
     return reply.status(200).send({ maxUnlockedStep: resetMaxUnlockedStep() })
   })
-
-  // TEMPORARY — one-off DB reset utility, removed again right after use.
-  app.post('/api/admin/clear-responses', async (request, reply) => {
-    const { pin } = request.body as { pin: string }
-    if (pin !== process.env.ADMIN_PIN) {
-      return reply.status(401).send({ error: 'invalid_pin' })
-    }
-    try {
-      await pool.query('TRUNCATE TABLE logo_evaluations RESTART IDENTITY')
-      return reply.status(200).send({ cleared: true })
-    } catch (error) {
-      app.log.error(error, 'failed to clear logo_evaluations')
-      return reply.status(500).send({ error: 'clear_failed' })
-    }
-  })
 }
